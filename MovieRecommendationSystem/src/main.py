@@ -5,24 +5,45 @@ from recommender import Recommender
 from evaluation import Evaluator
 
 def main():
-    #Load data using DataLoader class
+    # Ask user for filtering method
+    print("Select filtering method:")
+    print("1. User-based Collaborative Filtering")
+    print("2. Item-based Collaborative Filtering")
+    method_input = input("Enter 1 or 2: ").strip()
+    if method_input == "1":
+        method = 'user'
+    elif method_input == "2":
+        method = 'item'
+    else:
+        print("Invalid input. Exiting.")
+        return
+
+    # Load data
     data_loader = DataLoader(data_dir="../data")
     ratings, users, movies = data_loader.load_data()
     train_data, test_data = data_loader.load_train_test()
 
-    #Create user-item matrix and similarity matrix using SimilarityCalculator class
     sim_calc = SimilarityCalculator(train_data)
-    train_matrix = sim_calc.create_user_item_matrix()
-    user_similarity_df = sim_calc.compute_user_similarity(train_matrix)
 
-    #Create recommender and evaluator objects
-    recommender = Recommender(train_matrix, user_similarity_df)
-    evaluator = Evaluator(recommender.recommend_movies, train_matrix, user_similarity_df, test_data, movies)
+    if method == 'user':
+        train_matrix = sim_calc.create_user_item_matrix()
+        similarity_df = sim_calc.compute_user_similarity(train_matrix)
+        recommender = Recommender(train_matrix, similarity_df)
+        eval_func = lambda user_id, top_n=5: recommender.recommend_movies(user_id, top_n, method='user')
+    else:
+        item_user_matrix = sim_calc.create_item_user_matrix()
+        item_similarity_df = sim_calc.compute_item_similarity(item_user_matrix)
+        # For item-based, we still need user_matrix and user_similarity_df for the constructor, but only item matrices will be used
+        user_matrix = sim_calc.create_user_item_matrix()
+        user_similarity_df = sim_calc.compute_user_similarity(user_matrix)
+        recommender = Recommender(user_matrix, user_similarity_df, item_user_matrix, item_similarity_df)
+        eval_func = lambda user_id, top_n=5: recommender.recommend_movies(user_id, top_n, method='item')
 
-    #Evaluate on random users
+    evaluator = Evaluator(eval_func, train_data, None, test_data, movies)
+
+    # Evaluate on random users
     test_users = test_data['user_id'].unique()
-
-    num_users = min(10, len(test_users))
+    num_users = min(5, len(test_users))
     random_users = random.sample(list(test_users), num_users)
 
     precisions = []

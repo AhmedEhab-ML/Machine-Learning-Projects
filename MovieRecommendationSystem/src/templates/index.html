@@ -28,7 +28,7 @@
             font-weight: 600;
             color: #2d3a4b;
         }
-        input[type="number"], button {
+        input[type="number"], button, select {
             padding: 10px;
             border-radius: 6px;
             border: 1px solid #b0c4de;
@@ -37,6 +37,10 @@
         }
         input[type="number"] {
             width: 120px;
+        }
+        select {
+            width: 160px;
+            margin-left: 10px;
         }
         button {
             background: #66a6ff;
@@ -84,6 +88,11 @@
             <input type="number" name="user_id" min="1" required>
             <label for="top_n">Top Recommended Movies:</label>
             <input type="number" name="top_n" value="5" min="1" max="20" required>
+            <label for="method">Filtering Type:</label>
+            <select name="method">
+                <option value="user" {% if selected_method == 'user' %}selected{% endif %}>User-based</option>
+                <option value="item" {% if selected_method == 'item' %}selected{% endif %}>Item-based</option>
+            </select>
             <button type="submit">Get Recommendations</button>
         </form>
         <form method="get" style="display:inline;">
@@ -94,7 +103,7 @@
                 <div class="error">Error: {{ details.error }}</div>
             {% else %}
                 <div class="result">
-                    <h3>Results for User ID {{ details.user_id }}</h3>
+                    <h3>Results for User ID {{ details.user_id }} ({{ 'User-based' if details.method == 'user' else 'Item-based' }})</h3>
                     <div>
                         <strong>Top {{ details.top_n }} Recommended Movies:</strong>
                         <ul>

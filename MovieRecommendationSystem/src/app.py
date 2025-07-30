@@ -12,20 +12,23 @@ data_loader = DataLoader(data_dir="../data")
 ratings, users, movies = data_loader.load_data()
 train_data, test_data = data_loader.load_train_test()
 sim_calc = SimilarityCalculator(train_data)
-train_matrix = sim_calc.create_user_item_matrix()
-user_similarity_df = sim_calc.compute_user_similarity(train_matrix)
-recommender = Recommender(train_matrix, user_similarity_df)
-evaluator = Evaluator(recommender.recommend_movies, train_matrix, user_similarity_df, test_data, movies)
+user_item_matrix = sim_calc.create_user_item_matrix()
+user_similarity_df = sim_calc.compute_user_similarity(user_item_matrix)
+item_user_matrix = sim_calc.create_item_user_matrix()
+item_similarity_df = sim_calc.compute_item_similarity(item_user_matrix)
+recommender = Recommender(user_item_matrix, user_similarity_df, item_user_matrix, item_similarity_df)
+evaluator = Evaluator(recommender.recommend_movies, user_item_matrix, user_similarity_df, test_data, movies)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     details = None
+    selected_method = 'user'
     if request.method == 'POST':
         if request.form.get('clear'):
-            # If Clear button pressed, just render the page with no results
-            return render_template('index.html', details=None)
+            return render_template('index.html', details=None, selected_method='user')
         user_id = request.form.get('user_id')
         top_n = request.form.get('top_n', 5)
+        selected_method = request.form.get('method', 'user')
         try:
             user_id = int(user_id)
             top_n = int(top_n)
@@ -34,7 +37,7 @@ def index():
             elif user_id not in test_data['user_id'].values:
                 details = {"error": f"User ID {user_id} is not found in the database."}
             else:
-                recs = recommender.recommend_movies(user_id, top_n=top_n)
+                recs = recommender.recommend_movies(user_id, top_n=top_n, method=selected_method)
                 movie_id_to_title = dict(zip(movies['movie_id'], movies['title']))
                 rec_titles = [movie_id_to_title.get(mid, f"Movie {mid}") for mid in recs.index] if recs is not None else []
                 user_test_data = test_data[test_data['user_id'] == user_id]
@@ -49,11 +52,12 @@ def index():
                     "num_hits": num_hits,
                     "precision": f"{precision:.3f}",
                     "top_n": top_n,
-                    "user_id": user_id
+                    "user_id": user_id,
+                    "method": selected_method
                 }
         except Exception as e:
             details = {"error": "Invalid input. Please enter valid numbers."}
-    return render_template('index.html', details=details)
+    return render_template('index.html', details=details, selected_method=selected_method)
 
 if __name__ == '__main__':
     app.run(debug=True)
