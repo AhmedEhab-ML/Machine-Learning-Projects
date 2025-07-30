@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Recommendation System</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 40px 30px 30px 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(102,166,255,0.15);
+        }
+        h2 {
+            text-align: center;
+            color: #2d3a4b;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        label {
+            font-weight: 600;
+            color: #2d3a4b;
+        }
+        input[type="number"], button {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #b0c4de;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        input[type="number"] {
+            width: 120px;
+        }
+        button {
+            background: #66a6ff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #89f7fe;
+            color: #2d3a4b;
+        }
+        .result {
+            margin-top: 30px;
+            background: #f7fbff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(102,166,255,0.07);
+        }
+        .result h3 {
+            margin-top: 0;
+            color: #2d3a4b;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .score {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #2d3a4b;
+        }
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🎬 Movie Recommendation System</h2>
+        <form method="post" autocomplete="off" style="display:inline;">
+            <label for="user_id">User ID:</label>
+            <input type="number" name="user_id" min="1" required>
+            <label for="top_n">Top Recommended Movies:</label>
+            <input type="number" name="top_n" value="5" min="1" max="20" required>
+            <button type="submit">Get Recommendations</button>
+        </form>
+        <form method="get" style="display:inline;">
+            <button type="submit" style="background:#e3e8ee;color:#2d3a4b;margin-left:10px;">Clear</button>
+        </form>
+        {% if details %}
+            {% if details.error %}
+                <div class="error">Error: {{ details.error }}</div>
+            {% else %}
+                <div class="result">
+                    <h3>Results for User ID {{ details.user_id }}</h3>
+                    <div>
+                        <strong>Top {{ details.top_n }} Recommended Movies:</strong>
+                        <ul>
+                            {% for movie in details.rec_titles %}
+                                <li>{{ movie }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div>
+                        <strong>Relevant Movies (rated ≥ 4):</strong>
+                        <ul>
+                            {% for movie in details.relevant_titles %}
+                                <li>{{ movie }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="score">
+                        ✔️ Hits (Correct Recommendations): <strong>{{ details.num_hits }}</strong><br>
+                        📊 Precision@{{ details.top_n }}: <strong>{{ details.precision }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
