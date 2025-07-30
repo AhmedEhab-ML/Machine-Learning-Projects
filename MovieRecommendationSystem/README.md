@@ -2,9 +2,6 @@
 
 <img width="942" height="601" alt="homepage" src="https://github.com/user-attachments/assets/74dac534-c2a3-4470-ab35-c4c058ff2db8" />
 
-
-<img width="942" height="601" alt="homepage" src="https://github.com/user-attachments/assets/74dac534-c2a3-4470-ab35-c4c058ff2db8" />
-
 ## Overview
 
 This project is a **Movie Recommendation System** built with Python and Flask. It demonstrates how collaborative filtering (both user-based and item-based) can be used to recommend movies to users based on their preferences. The application features a professional web interface where users can input their user ID, select the filtering method, and receive personalized movie recommendations along with relevant statistics.
@@ -107,8 +104,6 @@ python app.py
 <img width="1351" height="917" alt="results" src="https://github.com/user-attachments/assets/f17e5d7d-be95-437f-9820-9252183e9301" />
 
 ---
-
-<img width="1351" height="917" alt="results" src="https://github.com/user-attachments/assets/f17e5d7d-be95-437f-9820-9252183e9301" />
 
 
 ## File Descriptions
