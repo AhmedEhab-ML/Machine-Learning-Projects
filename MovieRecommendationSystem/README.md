@@ -1,6 +1,6 @@
 # Movie Recommendation System
 
-<img width="942" height="601" alt="homepage" src="https://github.com/user-attachments/assets/74dac534-c2a3-4470-ab35-c4c058ff2db8" />
+<img width="937" height="628" alt="homepage" src="https://github.com/user-attachments/assets/a55f8f02-4960-4c6d-b7ab-a146f4a83081" />
 
 ## Overview
 
@@ -101,7 +101,7 @@ python app.py
 
 ---
 
-<img width="1351" height="917" alt="results" src="https://github.com/user-attachments/assets/f17e5d7d-be95-437f-9820-9252183e9301" />
+<img width="1362" height="921" alt="results" src="https://github.com/user-attachments/assets/d32fa0a0-32b4-4744-9c86-6604841f3c73" />
 
 ---
 
